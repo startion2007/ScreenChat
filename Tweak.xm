@@ -151,9 +151,54 @@ UIButton *saveSnapButton = nil;
 
 // Removes the caption text limit
 %hook SCCaptionDefaultTextView
--(CGFloat) maxTextWidth {
-	return FLT_MAX;
+-(void) trimTextViewTextIfNecessary {
+    return;
 }
+
+#if defined(__arm__)
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if (range.length == 0) {
+        if ([text isEqualToString:@"\n"]) {
+            textView.text = [NSString stringWithFormat:@"%@\n\t",textView.text];
+            return NO;
+        }
+    }
+    return YES;
+}
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
+    return YES;
+}
+-(int)contentHeight {
+    int orig = %orig;
+    return orig*3; // 480 x 3
+}
+-(int)contentWidth {
+    int orig = %orig;
+    return orig*3; // 480 x 3
+}
+#elif defined(__arm64__)
+- (_Bool)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if (range.length == 0) {
+        if ([text isEqualToString:@"\n"]) {
+            textView.text = [NSString stringWithFormat:@"%@\n\t",textView.text];
+            return NO;
+        }
+    }
+    return YES;
+}
+- (_Bool)textViewShouldEndEditing:(UITextView *)textView {
+    return YES;
+}
+-(long long)contentHeight {
+    long long orig = %orig;
+    return orig*3; // 480 x 3
+}
+-(long long)contentWidth {
+    long long orig = %orig;
+    return orig*3; // 480 x 3
+}
+#else
+#endif
 %end
 
 // Stops timer from progressing
@@ -161,12 +206,21 @@ UIButton *saveSnapButton = nil;
 -(void)tick:(id)tick {
 	return;
 }
-
+#if defined(__arm__)
 -(void)startTimer:(id)snap source:(int)source {
 	currentSnap = snap;
 
 	%orig;
 }
+#elif defined(__arm64__)
+- (void)startTimer:(id)arg1 source:(long long)arg2 {
+	currentSnap = snap;
+
+	%orig;
+}
+#else
+#endif
+
 %end
 
 // Breaks the daily replay limit
