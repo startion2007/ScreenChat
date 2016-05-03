@@ -18,6 +18,7 @@ This is a test, not a project for invading the privacy of users. I am not respon
 * Giovanni Di Grezia, whose [code](http://www.xgiovio.com/blog-photos-videos-other/blog/resign-your-ios-ipa-frameworks-and-plugins-included/) served as the basis for the patchapp.sh revisions.
 * [alexzielenski](https://github.com/alexzielenski) for optool.
 * [BishopFox](https://github.com/BishopFox) for theos-jailed.
+* [iMokhles](https://github.com/iMokhles) for fixing the text limit issues and improving arm64 compatibility.
 
 
 How to install
